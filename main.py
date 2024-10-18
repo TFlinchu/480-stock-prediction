@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
 
 from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm
 from LSTM import LSTM, train, test
@@ -18,7 +19,7 @@ if __name__ == "__main__":
     stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
     
     # Define how far back we want to consider, and shift the data
-    lookback = 7  
+    lookback = 10
     shifted_data = prepare_dataframe_for_lstm(stock_data, lookback)
 
     # Scale the data for the LSTM model
@@ -75,3 +76,27 @@ if __name__ == "__main__":
     # Final test on the model
     print("Final Test:")
     test(model, test_loader, criterion)
+    
+    # Get the predictions for the training set without training, and converts it to a NumPy Array. This will be used for graphing
+    train_predictions = model(x_train).detach().numpy().flatten()
+        
+    # Graph the training set using Matplotlib
+    # This will be very accurate, as the model has already seen this data
+    plt.plot(y_train, label='Actual Close')
+    plt.plot(train_predictions, label='Predicted')
+    plt.xlabel('Day')
+    plt.ylabel('Close Price')
+    plt.legend()
+    plt.show()
+    
+    # Get the predictions for the testing set and converts it to a NumPy Array.
+    test_predictions = model(x_test).detach().numpy().flatten()
+    
+    # Graph the testing set using Matplotlib
+    # This will be much less accurate, as the model has not seen this data
+    plt.plot(y_test, label='Actual Close')
+    plt.plot(test_predictions, label='Predicted')
+    plt.xlabel('Day')
+    plt.ylabel('Close Price')
+    plt.legend()
+    plt.show()
