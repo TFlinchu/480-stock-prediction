@@ -15,16 +15,18 @@ def process_csv_files(stock):
     # Check if the .csv file exists
     if not os.path.isfile(csv_file_path):
         print(f"Error: The file {csv_file_path} does not exist.")
+        return None
     else:
         csv_files = glob.glob(csv_file_path)
 
     # Initialize a dictionary to store column data
     column_data = {}
 
-    # Read each CSV file, drop stock splits & dividends, and store the data in the dictionary
+    # Read each CSV file, drop all columns but date and close (all we need to start), and store the data in the dictionary
     for file in csv_files:
         df = pd.read_csv(file)
-        df = df.drop(columns=['Stock Splits', 'Dividends'])
+        # Remove one of these columns from the list if we want to use it
+        df = df.drop(columns=['Open', 'High', 'Low', 'Volume', 'Stock Splits', 'Dividends'])
         
         # Convert 'Date' column to numeric format
         # This may not be necessary, as I can't imagine we would need to use the date in our model
