@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-from read_data import StockDataset, process_csv_files, prepare_dataframe_for_lstm
+from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm
 from LSTM import LSTM, train, test
 
 if __name__ == "__main__":
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     
     # Define important parameters
     learning_rate = 0.001
-    num_epochs = 20
+    num_epochs = 15
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     
