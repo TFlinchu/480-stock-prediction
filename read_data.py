@@ -2,6 +2,9 @@ import glob
 import os
 import pandas as pd
 import torch
+import numpy as np
+from copy import deepcopy as dc
+from torch.utils.data import Dataset
 
 def process_csv_files(stock):
     # Path where the CSV files are stored, and set permissions
@@ -50,19 +53,37 @@ def process_csv_files(stock):
 
     return tensor_data
 
-# testing code
-if __name__ == "__main__":
-    # Process the APPL CSV file and get the tensor data
-    tensor_data = process_csv_files("AAPL")
+# Prepare the data for the LSTM model by shifting the data by the lookback value
+def prepare_dataframe_for_lstm(stock_data, lookback):
+    # Convert the dictionary to a DataFrame
+    stock_dataframe = pd.DataFrame(stock_data)
+    
+    # Create a copy of the DataFrame
+    stock_dataframe = dc(stock_dataframe)
+    
+    # Set the 'Date' column as the index
+    stock_dataframe.set_index('Date', inplace=True)
+    
+    for i in range(1, lookback + 1):
+        # Create a new column for each lookback value
+        stock_dataframe[f'Close(t-{i})'] = stock_dataframe['Close'].shift(i)
+    
+    # As we are shifting the data, NaN values will be created. This drops those rows
+    stock_dataframe.dropna(inplace=True)
+    
+    # Flip the DataFrame so that the most recent data is at the end of the DataFrame
+    shifted_data = dc(np.flip(stock_dataframe.to_numpy(), axis=1))
+    
+    return shifted_data
 
-    # Print some of the data for testing
-    for column, tensor in tensor_data.items():
-        print(f"Column: {column}")
-        if column == 'Date':
-            # Convert timestamps back to readable date format
-            dates = pd.to_datetime(tensor.numpy() * 10**9)
-            date_strings = dates.strftime('%Y-%m-%d').tolist()
-            print(f"Data (first 5 entries): {date_strings[:5]}")
-        else:
-            print(f"Data (first 5 entries): {tensor[:5]}")
-        print()
+# Create a Dataset class to use with DataLoader
+class StockDataset(Dataset):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        
+    def __len__(self):
+        return len(self.x)
+    
+    def __getitem__(self, idx):
+        return self.x[idx], self.y[idx]
