@@ -36,9 +36,9 @@ def train(model, train_loader, criterion, optimizer):
         loss.backward()
         optimizer.step()
         
-        # print the loss every 100 batches
-        if i % 100 == 99:
-            avg_loss = running_loss / 100
+        # print the loss every 50 batches
+        if i % 50 == 49:
+            avg_loss = running_loss / 50
             print(f"Batch {i + 1} loss: {avg_loss:.5f}")
             running_loss = 0.0
             
