@@ -11,8 +11,6 @@ class LSTM(nn.Module):
         self.fc = nn.Linear(hidden_size, 1)
         
     def forward(self, x):
-        batch_size = x.size(0)
-           
         out, _ = self.lstm(x)
         out = self.fc(out[:, -1, :])
         return out
