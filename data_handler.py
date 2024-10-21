@@ -3,7 +3,6 @@ import os
 import pandas as pd
 import torch
 import numpy as np
-from copy import deepcopy as dc
 from torch.utils.data import Dataset
 
 def process_csv_files(stock):
@@ -58,9 +57,6 @@ def prepare_dataframe_for_lstm(stock_data, lookback):
     # Convert the dictionary to a DataFrame
     stock_dataframe = pd.DataFrame(stock_data)
     
-    # Create a copy of the DataFrame
-    stock_dataframe = dc(stock_dataframe)
-    
     # Set the 'Date' column as the index
     stock_dataframe.set_index('Date', inplace=True)
     
@@ -72,7 +68,7 @@ def prepare_dataframe_for_lstm(stock_data, lookback):
     stock_dataframe.dropna(inplace=True)
     
     # Flip the DataFrame so that the most recent data is at the end of the DataFrame
-    shifted_data = dc(np.flip(stock_dataframe.to_numpy(), axis=1))
+    shifted_data = np.flip(stock_dataframe.to_numpy(), axis=1)
     
     return shifted_data
 
