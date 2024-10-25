@@ -19,7 +19,7 @@ if __name__ == "__main__":
     stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
     
     # Define how far back we want to consider, and shift the data
-    lookback = 10
+    lookback = 5
     shifted_data = prepare_dataframe_for_lstm(stock_data, lookback)
 
     # Scale the data for the LSTM model
@@ -57,11 +57,11 @@ if __name__ == "__main__":
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
     
     # Create the Model
-    model = LSTM(input_size=1, hidden_size=4, num_layers=1)
+    model = LSTM(input_size=1, hidden_size=2500, num_layers=1)
     
     # Define important parameters
     learning_rate = 0.001
-    num_epochs = 15
+    num_epochs = 10
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     
