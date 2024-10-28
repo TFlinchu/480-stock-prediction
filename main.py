@@ -19,7 +19,7 @@ if __name__ == "__main__":
     stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
     
     # Define how far back we want to consider, and shift the data
-    lookback = 5
+    lookback = 3
     shifted_data = prepare_dataframe_for_lstm(stock_data, lookback)
 
     # Scale the data for the LSTM model
