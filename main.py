@@ -12,7 +12,15 @@ from LSTM import LSTM, train, test
 
 if __name__ == "__main__":
     # Get the data of the desired stock
-    stock = 'AAPL'
+    while True:
+        stock = input("Enter the stock you would like to use: ")
+        stock_data = process_csv_files(stock)
+
+        if stock_data is None:
+            print("The stock you entered is invalid. Please try again.")
+        else:
+            break
+
     stock_data = process_csv_files(stock)
     
     # Convert 'Date' column to datetime format 
