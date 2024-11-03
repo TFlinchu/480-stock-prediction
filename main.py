@@ -19,6 +19,7 @@ if __name__ == "__main__":
         if stock_data is None:
             print("The stock you entered is invalid. Please try again.")
         else:
+            print("Valid input. Testing on file " + stock + ".csv...")
             break
 
     stock_data = process_csv_files(stock)
