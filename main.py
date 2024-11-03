@@ -21,8 +21,6 @@ if __name__ == "__main__":
         else:
             print("Valid input. Testing on file " + stock + ".csv...")
             break
-
-    stock_data = process_csv_files(stock)
     
     # Convert 'Date' column to datetime format 
     stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
