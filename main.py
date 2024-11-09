@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
+import time
 
 from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm
 from LSTM import LSTM, train, test
@@ -71,6 +72,9 @@ if __name__ == "__main__":
     num_epochs = 5
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+    # Sets start_time to a point in time
+    start_time = time.perf_counter()
     
     # Train the model
     for epoch in range(num_epochs):
@@ -79,8 +83,15 @@ if __name__ == "__main__":
         test(model, test_loader, criterion)
         print("-----------------------------------------------")
         print()
-        
-    # Final test on the model# Final test on the model
+
+    # Calculates training time by subtracting the current time by start_time
+    elapsed_time = time.perf_counter() - start_time
+    minutes = int(elapsed_time/60)
+    seconds = int(elapsed_time%60)
+    print(f"Training Time: {minutes}:{seconds}")
+    print()
+
+    # Final test on the model
     print("Final Test:")
     test(model, test_loader, criterion)
 
