@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -93,7 +94,8 @@ if __name__ == "__main__":
 
     # Final test on the model
     print("Final Test:")
-    test(model, test_loader, criterion)
+    loss = test(model, test_loader, criterion)
+    print(f"Test loss: {loss:.5f}")
 
     # Get the predictions for the training set without training, and converts it to a NumPy Array. This will be used for graphing
     train_predictions = model(x_train).detach().numpy().flatten()
@@ -141,3 +143,10 @@ if __name__ == "__main__":
     plt.ylabel('Close Price')
     plt.legend()
     plt.show()
+
+    if not os.path.exists("result.csv"):
+        with open("result.csv", "w") as file:
+            file.write("Stock,Loss,TrainingTime,Lookback,LearningRate,HiddenSize,Epochs\n")
+
+    with open("result.csv", "a") as file:
+        file.write(f"{stock},{loss:.5f},{minutes}:{seconds},{lookback},{learning_rate},{model.hidden_size},{num_epochs}")

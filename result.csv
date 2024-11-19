@@ -1,0 +1,3 @@
+Stock,Loss,TrainingTime,Lookback,LearningRate,HiddenSize,Epochs
+AMZN,0.00158,8:28,3,0.001,2250,5
+ABC,0.00088,12:30,3,0.001,2250,5
