@@ -23,8 +23,8 @@ if __name__ == "__main__":
             print("Valid input. Testing on file " + stock + ".csv...")
             break
     
-    # Convert 'Date' column to datetime format 
-    stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
+    # Convert 'timestamp' column to datetime format 
+    stock_data['timestamp'] = pd.to_datetime(stock_data['timestamp'], unit='s')
     
     # Define how far back we want to consider, and shift the data
     lookback = 3
