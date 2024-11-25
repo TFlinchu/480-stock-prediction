@@ -24,6 +24,9 @@ def process_csv_files(stock):
     # This may not be necessary, as I can't imagine we would need to use the date in our model
     if 'timestamp' in df.columns:
         df['timestamp'] = pd.to_datetime(df['timestamp']).astype('int64') / 10**9  # Convert to seconds since epoch
+        
+    # Reverse the order of the rows in the DataFrame
+    df = df.iloc[::-1].reset_index(drop=True)
 
     # Store the data in the dictionary
     for column in df.columns:
