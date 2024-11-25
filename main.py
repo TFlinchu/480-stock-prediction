@@ -12,6 +12,8 @@ from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_
 from LSTM import LSTM, train, test
 
 if __name__ == "__main__":
+    # Multiple stocks to train on
+    training_stocks = ["AAPL", "MSFT", "GOOG"]
     # Get the data of the desired stock
     while True:
         stock = input("Enter the stock you would like to use: ")
@@ -22,6 +24,17 @@ if __name__ == "__main__":
         else:
             print("Valid input. Testing on file " + stock + ".csv...")
             break
+    
+    # Loop through training stocks
+    training_stocks_data = {}              
+    for t_stock in training_stocks:
+        t_data = process_csv_files(t_stock)
+        
+        if t_data is None:
+            print(f"Training stock {t_stock} was invalid.")
+        else:
+            training_stocks_data[t_stock] = t_data      # Store the processed data
+            print(f"Training data for {t_stock} was added.")
     
     # Convert 'Date' column to datetime format 
     stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
