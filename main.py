@@ -23,8 +23,8 @@ if __name__ == "__main__":
             print("Valid input. Testing on file " + stock + ".csv...")
             break
     
-    # Convert 'Date' column to datetime format 
-    stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
+    # Convert 'timestamp' column to datetime format 
+    stock_data['timestamp'] = pd.to_datetime(stock_data['timestamp'], unit='s')
     
     # Define how far back we want to consider, and shift the data
     lookback = 3
@@ -95,30 +95,30 @@ if __name__ == "__main__":
     print("Final Test:")
     test(model, test_loader, criterion)
 
-    # Get the predictions for the training set without training, and converts it to a NumPy Array. This will be used for graphing
-    train_predictions = model(x_train).detach().numpy().flatten()
+    # # Get the predictions for the training set without training, and converts it to a NumPy Array. This will be used for graphing
+    # train_predictions = model(x_train).detach().numpy().flatten()
 
     # Inverse transform the entire scaled data
     scaled_data_inverse = scaler.inverse_transform(scaled_data)
 
-    # Extract the actual close prices for the test set
-    y_train_real = scaled_data_inverse[:split_index, 0]
+    # # Extract the actual close prices for the test set
+    # y_train_real = scaled_data_inverse[:split_index, 0]
 
-    # Create an array with the same number of features as the original data
-    train_predictions_full = np.zeros((train_predictions.shape[0], scaled_data.shape[1]))
-    train_predictions_full[:, 0] = train_predictions
+    # # Create an array with the same number of features as the original data
+    # train_predictions_full = np.zeros((train_predictions.shape[0], scaled_data.shape[1]))
+    # train_predictions_full[:, 0] = train_predictions
 
-    # Inverse transform the predictions
-    train_predictions_real = scaler.inverse_transform(train_predictions_full)[:, 0]
+    # # Inverse transform the predictions
+    # train_predictions_real = scaler.inverse_transform(train_predictions_full)[:, 0]
 
-    # Graph the training set using Matplotlib
-    # This will be very accurate, as the model has already seen this data
-    plt.plot(y_train_real, label='Actual Close')
-    plt.plot(train_predictions_real, label='Predicted')
-    plt.xlabel('Day')
-    plt.ylabel('Close Price')
-    plt.legend()
-    plt.show()
+    # # Graph the training set using Matplotlib
+    # # This will be very accurate, as the model has already seen this data
+    # plt.plot(y_train_real, label='Actual Close')
+    # plt.plot(train_predictions_real, label='Predicted')
+    # plt.xlabel('Day')
+    # plt.ylabel('Close Price')
+    # plt.legend()
+    # plt.show()
 
     # Get the predictions for the testing set and converts it to a NumPy Array.
     test_predictions = model(x_test).detach().numpy().flatten()

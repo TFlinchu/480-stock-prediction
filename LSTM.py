@@ -37,7 +37,7 @@ def train(model, train_loader, criterion, optimizer):
         # print the loss every 50 batches
         if i % 50 == 49:
             avg_loss = running_loss / 50
-            print(f"Batch {i + 1} loss: {avg_loss:.5f}")
+            print(f"Batch {i + 1} loss: {avg_loss:.10f}")
             running_loss = 0.0
             
     print()
@@ -59,4 +59,4 @@ def test(model, test_loader, criterion):
             
     avg_loss = running_loss / len(test_loader)
     
-    print(f"Test loss: {avg_loss:.5f}")
+    print(f"Test loss: {avg_loss:.10f}")

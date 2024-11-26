@@ -1,45 +1,38 @@
 import glob
 import os
+import requests
 import pandas as pd
 import torch
 import numpy as np
 from torch.utils.data import Dataset
 
 def process_csv_files(stock):
-    # Path where the CSV files are stored, and set permissions
-    folder_path = './archive'
-    os.chmod(folder_path, 0o666)
 
-    # Get the CSV files matching the stock chosen
-    stock = stock + '.csv'
-    csv_file_path = os.path.join(folder_path, stock)
+    # An url to the api that will fetch our stock data
+    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock + '&outputsize=full&datatype=csv&apikey=E0WTCPU2OH7QNKY5'     
 
-    # Check if the .csv file exists
-    if not os.path.isfile(csv_file_path):
-        print(f"Error: The file {csv_file_path} does not exist.")
-        return None
-    else:
-        csv_files = glob.glob(csv_file_path)
+    # Read CSV file, drop all columns but timestamp and close (all we need to start), and store the timestamp in the dictionary
+    df = pd.read_csv(url)
 
     # Initialize a dictionary to store column data
     column_data = {}
 
-    # Read each CSV file, drop all columns but date and close (all we need to start), and store the data in the dictionary
-    for file in csv_files:
-        df = pd.read_csv(file)
-        # Remove one of these columns from the list if we want to use it
-        df = df.drop(columns=['Open', 'High', 'Low', 'Volume', 'Stock Splits', 'Dividends'])
+    # Remove one of these columns from the list if we want to use it
+    df = df.drop(columns=['open', 'high', 'low', 'volume'])
+    
+    # Convert 'timestamp' column to numeric format
+    # This may not be necessary, as I can't imagine we would need to use the date in our model
+    if 'timestamp' in df.columns:
+        df['timestamp'] = pd.to_datetime(df['timestamp']).astype('int64') / 10**9  # Convert to seconds since epoch
         
-        # Convert 'Date' column to numeric format
-        # This may not be necessary, as I can't imagine we would need to use the date in our model
-        if 'Date' in df.columns:
-            df['Date'] = pd.to_datetime(df['Date']).astype('int64') / 10**9  # Convert to seconds since epoch
+    # Reverse the order of the rows in the DataFrame
+    df = df.iloc[::-1].reset_index(drop=True)
 
-        # Store the data in the dictionary
-        for column in df.columns:
-            if column not in column_data:
-                column_data[column] = []
-            column_data[column].extend(df[column].tolist())
+    # Store the data in the dictionary
+    for column in df.columns:
+        if column not in column_data:
+            column_data[column] = []
+        column_data[column].extend(df[column].tolist())
 
     # Convert lists in the dictionary to PyTorch tensors
     tensor_data = {}
@@ -57,12 +50,12 @@ def prepare_dataframe_for_lstm(stock_data, lookback):
     # Convert the dictionary to a DataFrame
     stock_dataframe = pd.DataFrame(stock_data)
     
-    # Set the 'Date' column as the index
-    stock_dataframe.set_index('Date', inplace=True)
+    # Set the 'timestamp' column as the index
+    stock_dataframe.set_index('timestamp', inplace=True)
     
     for i in range(1, lookback + 1):
         # Create a new column for each lookback value
-        stock_dataframe[f'Close(t-{i})'] = stock_dataframe['Close'].shift(i)
+        stock_dataframe[f'close(t-{i})'] = stock_dataframe['close'].shift(i)
     
     # As we are shifting the data, NaN values will be created. This drops those rows
     stock_dataframe.dropna(inplace=True)
