@@ -52,10 +52,10 @@ def process_csv_files(stock):
 
     return tensor_data
 
-# Combine the training stocks' datasets
-def combine_training_data(training_stocks_data):
-    for value in training_stocks_data.values():
-        print(value)
+# Combine the training stocks' datasets --> commenting out for now, changing to a different method.
+# def combine_training_data(training_stocks_data):
+#     for value in training_stocks_data.values():
+#         print(value)
 
 # Prepare the data for the LSTM model by shifting the data by the lookback value
 def prepare_dataframe_for_lstm(stock_data, lookback):

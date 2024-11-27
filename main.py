@@ -26,15 +26,30 @@ if __name__ == "__main__":
             break
     
     # Loop through training stocks
-    training_stocks_data = {}              
+    # training_stocks_data = {} --> commenting out to try different method
     for t_stock in training_stocks:
         t_data = process_csv_files(t_stock)
         
         if t_data is None:
             print(f"Training stock {t_stock} was invalid.")
         else:
-            training_stocks_data[t_stock] = t_data      # Store the processed data
-            print(f"Training data for {t_stock} was added.")
+            # print(f"Training data for {t_stock} processed and prepared for LSTM.")
+            
+            # Prepare the data for the LSTM model
+            t_shifted_data = prepare_dataframe_for_lstm(t_data, lookback=3)
+            # training_stocks_data[t_stock] = t_shifted_data      # Store the prepared data --> commenting out to try different method
+            
+            # Create new model 
+            model = LSTM(input_size=1, hidden_size=2250, num_layers=1)
+    
+            # Define important parameters
+            learning_rate = 0.001   # possibly change
+            num_epochs = 5
+            criterion = nn.MSELoss()
+            optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+            
+            
+    
     
     # Convert 'Date' column to datetime format 
     stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
