@@ -60,3 +60,19 @@ def test(model, test_loader, criterion):
     avg_loss = running_loss / len(test_loader)
     
     print(f"Test loss: {avg_loss:.10f}")
+    
+# Predict future stock prices
+def predict_future(model, last_data, future_steps):
+    model.eval()
+    predictions = []
+    current_data = last_data
+
+    for _ in range(future_steps):
+        with torch.no_grad():
+            prediction = model(current_data)
+            predictions.append(prediction.item())
+            # Ensure the dimensions match for concatenation
+            prediction = prediction.view(1, 1, 1)
+            current_data = torch.cat((current_data[:, 1:, :], prediction), dim=1)
+
+    return predictions
