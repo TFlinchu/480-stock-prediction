@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import time
 
 from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm
-from LSTM import LSTM, train, test
+from LSTM import LSTM, train, test, predict_future
 
 if __name__ == "__main__":
     # Get the data of the desired stock
@@ -137,6 +137,36 @@ if __name__ == "__main__":
     # This will be much less accurate, as the model has not seen this data
     plt.plot(y_test_real, label='Actual Close')
     plt.plot(test_predictions_real, label='Predicted')
+    plt.xlabel('Day')
+    plt.ylabel('Close Price')
+    plt.legend()
+    plt.show()
+    
+
+    # Predict future stock prices
+    print()
+    print("NOTE: The more days you predict, the less accurate the predictions will be.")
+    while True:
+        future_steps = input("How many days would you like to predict?: ")  # Number of future days to predict
+        try:
+            future_steps = int(future_steps)
+            if future_steps <= 0:
+                print("Invalid input. Please enter a positive integer.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a positive integer.")
+            
+    last_data = x_test[-1].unsqueeze(0)  # Use the last known data point
+    future_predictions = predict_future(model, last_data, future_steps)
+
+    # Inverse transform the future predictions
+    future_predictions_full = np.zeros((future_steps, scaled_data.shape[1]))
+    future_predictions_full[:, 0] = future_predictions
+    future_predictions_real = scaler.inverse_transform(future_predictions_full)[:, 0]
+
+    # Graph the future predictions
+    plt.plot(range(future_steps), future_predictions_real, label='Future Predicted')
     plt.xlabel('Day')
     plt.ylabel('Close Price')
     plt.legend()
