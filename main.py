@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import time
 
 from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm
-from LSTM import LSTM, train, test
+from LSTM import LSTM, train, test, predict_future
 
 if __name__ == "__main__":   
     # Timer for entirety of program
@@ -127,6 +127,31 @@ if __name__ == "__main__":
     # Inverse transform the entire scaled data
     scaled_data_inverse = scaler.inverse_transform(scaled_data)
 
+    # Get the predictions for the training set without training, and converts it to a NumPy Array. This will be used for graphing
+    # train_predictions = model(x_train).detach().numpy().flatten()
+
+    # Inverse transform the entire scaled data
+    # scaled_data_inverse = scaler.inverse_transform(scaled_data)
+
+    # Extract the actual close prices for the test set
+    # y_train_real = scaled_data_inverse[:split_index, 0]
+
+    # Create an array with the same number of features as the original data
+    # train_predictions_full = np.zeros((train_predictions.shape[0], scaled_data.shape[1]))
+    # train_predictions_full[:, 0] = train_predictions
+
+    # Inverse transform the predictions
+    # train_predictions_real = scaler.inverse_transform(train_predictions_full)[:, 0]
+
+    # Graph the training set using Matplotlib
+    # # This will be very accurate, as the model has already seen this data
+    # plt.plot(y_train_real, label='Actual Close')
+    # plt.plot(train_predictions_real, label='Predicted')
+    # plt.xlabel('Day')
+    # plt.ylabel('Close Price')
+    # plt.legend()
+    # plt.show()
+    
     # Get the predictions for the testing set and converts it to a NumPy Array.
     test_predictions = model(x_test).detach().numpy().flatten()
 
@@ -155,4 +180,32 @@ if __name__ == "__main__":
     plt.ylabel('Close Price')
     plt.legend()
     plt.show()
-    
+
+    # Predict future stock prices
+    print()
+    print("NOTE: The more days you predict, the less accurate the predictions will be.")
+    while True:
+        future_steps = input("How many days would you like to predict?: ")  # Number of future days to predict
+        try:
+            future_steps = int(future_steps)
+            if future_steps <= 0:
+                print("Invalid input. Please enter a positive integer.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a positive integer.")
+            
+    last_data = x_test[-1].unsqueeze(0)  # Use the last known data point
+    future_predictions = predict_future(model, last_data, future_steps)
+
+    # Inverse transform the future predictions
+    future_predictions_full = np.zeros((future_steps, scaled_data.shape[1]))
+    future_predictions_full[:, 0] = future_predictions
+    future_predictions_real = scaler.inverse_transform(future_predictions_full)[:, 0]
+
+    # Graph the future predictions
+    plt.plot(range(future_steps), future_predictions_real, label='Future Predicted')
+    plt.xlabel('Day')
+    plt.ylabel('Close Price')
+    plt.legend()
+    plt.show()
