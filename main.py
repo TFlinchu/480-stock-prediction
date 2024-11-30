@@ -63,7 +63,7 @@ if __name__ == "__main__":
         print(f"Training data for {stock} processed and prepared for LSTM.")
         
         # Convert 'Date' column to datetime format 
-        stock_data['Date'] = pd.to_datetime(stock_data['Date'], unit='s')
+        stock_data['timestamp'] = pd.to_datetime(stock_data['timestamp'], unit='s')
         
         # Prepare the data for the LSTM model
         lookback = 3
