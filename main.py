@@ -15,9 +15,6 @@ if __name__ == "__main__":
     # Timer for entirety of program
     program_start_time = time.perf_counter()
     
-    # Multiple stocks to train on
-    training_stocks = ["AAPL", "MSFT"]
-    
     # Create the Model
     model = LSTM(input_size=1, hidden_size=2250, num_layers=1)
     scaler = MinMaxScaler(feature_range=(-1, 1))
@@ -46,8 +43,10 @@ if __name__ == "__main__":
                     break
                 elif ans.lower() == "y":
                     print("Multiple stocks option chosen.")
+                    # Multiple stocks to train on
+                    training_stocks = input("Enter your training stock(s) separated with a space: ")
                     done = True
-                    stock_list = training_stocks + [stock]
+                    stock_list = training_stocks.split() + [stock]
                     break
                 else: 
                     print("Invalid input. Please try again.")
@@ -169,7 +168,7 @@ if __name__ == "__main__":
     elapsed_time = time.perf_counter() - program_start_time
     minutes = int(elapsed_time/60)
     seconds = int(elapsed_time%60)
-    print(f"Program Time: {minutes}:{seconds}")
+    print(f"Total Program Time: {minutes}:{seconds}")
     print()
 
     # Graph the testing set using Matplotlib
