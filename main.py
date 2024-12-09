@@ -194,6 +194,9 @@ if __name__ == "__main__":
         except ValueError:
             print("Invalid input. Please enter a positive integer.")
             
+    # Train on the testing data once, just so we can predict after
+    train(model, test_loader, criterion, optimizer)
+            
     last_data = x_test[-1].unsqueeze(0)  # Use the last known data point
     future_predictions = predict_future(model, last_data, future_steps)
 
