@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 import time
+import os
 
 from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm
 from LSTM import LSTM, train, test, predict_future
@@ -29,9 +30,9 @@ if __name__ == "__main__":
     done = False
     while not done:
         stock = input("Enter the stock you would like to use: ")
-        stock_data = process_csv_files(stock)
+        stock_file_path = os.path.join("archive", f"{stock}.csv")
 
-        if stock_data is None:
+        if not os.path.exists(stock_file_path):
             print("The stock you entered is invalid. Please try again.")
         else:
             while True:
@@ -43,17 +44,32 @@ if __name__ == "__main__":
                     break
                 elif ans.lower() == "y":
                     print("Multiple stocks option chosen.")
-                    # Multiple stocks to train on
-                    training_stocks = input("Enter your training stock(s) separated with a space: ")
-                    done = True
-                    stock_list = training_stocks.split() + [stock]
+                    
+                    correct = False
+                    while not correct:
+                        correct = True
+                        # Multiple stocks to train on
+                        training_stocks = input("Enter your training stock(s) separated with a space: ")
+                        done = True
+                        stock_list = training_stocks.split() + [stock]
+                        
+                        for stockToTest in stock_list:
+                            stock_file_path = os.path.join("archive", f"{stockToTest}.csv")
+                            if not os.path.exists(stock_file_path):
+                                print(f"Training stock {stockToTest} was invalid.")
+                                correct = False
                     break
                 else: 
                     print("Invalid input. Please try again.")
                     
     # Loop through stock_list (1 or multiple)
     for stock in stock_list:
-        stock_data = process_csv_files(stock)
+        try:
+            stock_data = process_csv_files(stock)
+        except Exception as e:
+            print(f"An error occurred while processing the data for {stock}: {e}")
+            print("If this error persists, we may have reached the API limit for today")
+            exit()
         
         if stock_data is None:
             print(f"Training stock {stock} was invalid.")
