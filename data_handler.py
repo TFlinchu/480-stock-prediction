@@ -6,12 +6,29 @@ import torch
 import numpy as np
 from torch.utils.data import Dataset
 
+def process_stock_listing():
+
+    # An url to the api that will fetch our list of available stocks
+    url ='https://www.alphavantage.co/query?function=LISTING_STATUS&apikey=demo'
+    
+    # Read CSV file
+    df = pd.read_csv(url)
+
+    # Initialize a list to store column data
+    column_data = []
+    
+    # Appends each value in the symbol column to list
+    for value in df['symbol']:
+        column_data.append(value)
+
+    return column_data
+
 def process_csv_files(stock):
 
     # An url to the api that will fetch our stock data
     url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + stock + '&outputsize=full&datatype=csv&apikey=E0WTCPU2OH7QNKY5'     
 
-    # Read CSV file, drop all columns but timestamp and close (all we need to start), and store the timestamp in the dictionary
+    # Read CSV file
     df = pd.read_csv(url)
 
     # Initialize a dictionary to store column data
