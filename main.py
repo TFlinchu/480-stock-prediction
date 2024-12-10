@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import time
 import os
 
-from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm
+from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm, process_stock_listing
 from LSTM import LSTM, train, test, predict_future
 
 if __name__ == "__main__":   
@@ -25,14 +25,17 @@ if __name__ == "__main__":
     num_epochs = 5
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-    
+
+    # Creates a list of available stocks in our api
+    available_stocks = process_stock_listing()
+
     # Get the data of the desired stock
     done = False
     while not done:
         stock = input("Enter the stock you would like to use: ")
         stock_file_path = os.path.join("archive", f"{stock}.csv")
 
-        if not os.path.exists(stock_file_path):
+        if stock not in available_stocks:
             print("The stock you entered is invalid. Please try again.")
         else:
             while True:
@@ -55,7 +58,7 @@ if __name__ == "__main__":
                         
                         for stockToTest in stock_list:
                             stock_file_path = os.path.join("archive", f"{stockToTest}.csv")
-                            if not os.path.exists(stock_file_path):
+                            if stock not in available_stocks:
                                 print(f"Training stock {stockToTest} was invalid.")
                                 correct = False
                     break
