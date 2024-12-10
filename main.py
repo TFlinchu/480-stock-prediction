@@ -58,7 +58,8 @@ if __name__ == "__main__":
                         
                         for stockToTest in stock_list:
                             stock_file_path = os.path.join("archive", f"{stockToTest}.csv")
-                            if stock not in available_stocks:
+
+                            if stockToTest not in available_stocks:
                                 print(f"Training stock {stockToTest} was invalid.")
                                 correct = False
                     break
