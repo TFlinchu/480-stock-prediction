@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # Get the data of the desired stock
     done = False
     while not done:
-        stock = input("Enter the stock you would like to use: ")
+        stock = input("Enter the stock you would like to use: ").upper()
 
         if stock not in available_stocks:
             print("The stock you entered is invalid. Please try again.")
@@ -51,7 +51,7 @@ if __name__ == "__main__":
                     while not correct:
                         correct = True
                         # Multiple stocks to train on
-                        training_stocks = input("Enter your training stock(s) separated with a space: ")
+                        training_stocks = input("Enter your training stock(s) separated with a space: ").upper()
                         done = True
                         stock_list = training_stocks.split() + [stock]
                         
