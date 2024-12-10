@@ -7,7 +7,6 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 import time
-import os
 
 from data_handler import StockDataset, process_csv_files, prepare_dataframe_for_lstm, process_stock_listing
 from LSTM import LSTM, train, test, predict_future
