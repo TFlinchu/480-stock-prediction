@@ -33,7 +33,6 @@ if __name__ == "__main__":
     done = False
     while not done:
         stock = input("Enter the stock you would like to use: ")
-        stock_file_path = os.path.join("archive", f"{stock}.csv")
 
         if stock not in available_stocks:
             print("The stock you entered is invalid. Please try again.")
@@ -57,8 +56,6 @@ if __name__ == "__main__":
                         stock_list = training_stocks.split() + [stock]
                         
                         for stockToTest in stock_list:
-                            stock_file_path = os.path.join("archive", f"{stockToTest}.csv")
-
                             if stockToTest not in available_stocks:
                                 print(f"Training stock {stockToTest} was invalid.")
                                 correct = False
